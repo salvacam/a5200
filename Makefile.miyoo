@@ -1,0 +1,46 @@
+PRGNAME     = a5200-od
+
+TOOLCHAIN = /opt/miyoo/usr
+
+EXESUFFIX = .dge
+CC = $(TOOLCHAIN)/bin/arm-linux-gcc
+CCP = $(TOOLCHAIN)/bin/arm-linux-g++
+LD = $(TOOLCHAIN)/bin/arm-linux-g++
+
+# add SDL dependencies
+SDL_LIB     = $(TOOLCHAIN)/lib
+SDL_INCLUDE = $(TOOLCHAIN)/include 
+
+INCLUDES = -I./emu -I./opendingux
+
+# change compilation / linking flag options
+F_OPTS 		= -fomit-frame-pointer -ffunction-sections -ffast-math -fsingle-precision-constant -fsigned-char 
+
+CC_OPTS		= -O2 -D_OPENDINGUX_ $(F_OPTS)
+
+CFLAGS      = -I$(SDL_INCLUDE) $(INCLUDES) $(CC_OPTS)
+CXXFLAGS	= -fno-exceptions -fno-rtti $(CFLAGS) 
+LDFLAGS     = -L$(SDL_LIB) $(CC_OPTS) -lSDL -lpthread
+
+
+# Files to be compiled
+SRCDIR   =  ./emu ./opendingux .
+VPATH    = $(SRCDIR)
+SRC_C    = $(foreach dir, $(SRCDIR), $(wildcard $(dir)/*.c))
+SRC_CP   = $(foreach dir, $(SRCDIR), $(wildcard $(dir)/*.cpp))
+OBJ_C    = $(notdir $(patsubst %.c, %.o, $(SRC_C)))
+OBJ_CP   = $(notdir $(patsubst %.cpp, %.o, $(SRC_CP)))
+OBJS     = $(OBJ_C) $(OBJ_CP)
+
+# Rules to make executable
+$(PRGNAME)$(EXESUFFIX): $(OBJS)  
+	$(LD) $(LDFLAGS) -o $(PRGNAME)$(EXESUFFIX) $^
+
+$(OBJ_C) : %.o : %.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+$(OBJ_CP) : %.o : %.cpp
+	$(CCP) $(CXXFLAGS) -c -o $@ $<
+
+clean:
+	rm -f $(PRGNAME)$(EXESUFFIX) *.o
