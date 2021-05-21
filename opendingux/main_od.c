@@ -545,7 +545,7 @@ int main(int argc, char *argv[]) {
 					}
 				}
 				
-				if (((keys[SDLK_ESCAPE] == SDL_PRESSED) && (keys[SDLK_RETURN] == SDL_PRESSED )) || (keys[SDLK_LCTRL] == SDL_PRESSED))  { 
+				if (((keys[SDLK_ESCAPE] == SDL_PRESSED) && (keys[SDLK_RETURN] == SDL_PRESSED )) || (keys[SDLK_RCTRL] == SDL_PRESSED))  { 
 					m_Flag = GF_MAINUI;
 				}
 				else if ( (keys[SDLK_ESCAPE] == SDL_PRESSED) )  { // SELECT
